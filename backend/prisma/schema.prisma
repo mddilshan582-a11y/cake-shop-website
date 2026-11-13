@@ -1,0 +1,70 @@
+// Smart Cake Shop - Prisma schema
+// Phase 1: User (STAFF authentication).  Phase 2: Category + Cake management.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STAFF
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  role         Role     @default(STAFF)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  cakes       Cake[]
+}
+
+model Cake {
+  id              Int      @id @default(autoincrement())
+  name            String
+  description     String?
+  originalPrice   Int     @map("original_price")
+  discountPercent Int     @default(0) @map("discount_percent")
+  imageUrl        String?
+  isFeatured     Boolean  @default(false) @map("is_featured")
+  isCounterCake  Boolean  @default(false) @map("is_counter_cake")
+  isAvailable     Boolean  @default(true) @map("is_available")
+  categoryId       Int      @map("category_id")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  category         Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@index([categoryId])
+  @@index([isFeatured])
+  @@index([isCounterCake])
+}
+
+model HeroSlide {
+  id           Int      @id @default(autoincrement())
+  imageUrl     String
+  title        String?
+  subtitle     String?
+  buttonText   String?
+  buttonLink   String?
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
