@@ -83,4 +83,3 @@ npm run dev                  # http://localhost:5173
 - `passwordHash` is NEVER returned in API responses
 - Inactive users cannot log inquorough.
 
-**Phase 1 complete — waiting for Phase 2 instructions.**
